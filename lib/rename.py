@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from argparse import ArgumentParser
+import argparse
 import os
 
 # Call the argument parser and set it to a simple variable
-parser = ArgumentParser()
+parser = argparse.ArgumentParser()
 
 # Create arguments
 parser.add_argument('input', help='The input file to rename. Only first column will be renamed.')
