@@ -9,9 +9,10 @@ import matplotlib.image as mpimg
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-i', '--image', help="Image to open, if desired.")
-parser.add_argument('-a', '--min', help='Minimum value to use for color gradient. [X,Y,Z]')
-parser.add_argument('-b', '--max', help='Maximum value to use for color gradient. [X,Y,Z]')
+parser.add_argument('-a', '--min', help='Minimum value of color gradient. ["X,Y,Z"]')
+parser.add_argument('-b', '--max', help='Maximum value of color gradient. "X,Y,Z"')
 parser.add_argument('-f', '--format', help='Type of color model being used by min and max. [HSV (default) or RGB]')
+parser.add_argument('-n', '--steps', help="Number of steps to use for the gradient.")
 parser.add_argument('-o', '--out', help='Optional: create an output file for the gradient image.')
 
 args = parser.parse_args()
@@ -29,6 +30,10 @@ if args.format is None:
 else:
 	format = args.format 
 
+if args.steps is None:
+	steps = 10
+else:
+	steps = int(args.steps)
 
 def calc_gradient(min, max, steps):
 	col_min = np.fromstring(min, sep=',', dtype=np.uint8)
@@ -69,11 +74,11 @@ def draw_gradient(gradient, hsv, width=512, height=100):
 		return image
 
 if format == 'HSV':
-	gradient = calc_gradient(args.min, args.max, 10)
+	gradient = calc_gradient(args.min, args.max, steps)
 	image_gradient = draw_gradient(gradient, hsv=1)
 
 if format == 'RGB':
-	gradient = calc_gradient(args.min, args.max, 10)
+	gradient = calc_gradient(args.min, args.max, steps)
 	image_gradient = draw_gradient(gradient, hsv=0)
 
 if args.image is not None:
