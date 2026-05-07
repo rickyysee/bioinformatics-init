@@ -12,6 +12,7 @@ parser.add_argument('-i', '--image', help="Image to open, if desired.")
 parser.add_argument('-a', '--min', help='Minimum value to use for color gradient. [X,Y,Z]')
 parser.add_argument('-b', '--max', help='Maximum value to use for color gradient. [X,Y,Z]')
 parser.add_argument('-f', '--format', help='Type of color model being used by min and max. [HSV (default) or RGB]')
+parser.add_argument('-o', '--out', help='Optional: create an output file for the gradient image.')
 
 args = parser.parse_args()
 
@@ -29,49 +30,67 @@ else:
 	format = args.format 
 
 
-def hsv_gradient(min, max, steps):
-	hsv_min = np.fromstring(min, sep=',', dtype=np.uint8)
-	hsv_max = np.fromstring(max, sep=',', dtype=np.uint8)
+def calc_gradient(min, max, steps):
+	col_min = np.fromstring(min, sep=',', dtype=np.uint8)
+	col_max = np.fromstring(max, sep=',', dtype=np.uint8)
 
 	gradient = []
-	print(f'Min vector: {hsv_min}')
-	print(f'Max vector: {hsv_max}\n')
+	print(f'Min vector: {col_min}')
+	print(f'Max vector: {col_max}\n')
 	for i in range(steps):
 		ratio = i / (steps - 1)
-		h = hsv_min[0] + (hsv_max[0] - hsv_min[0]) * ratio
-		s = hsv_min[1] + (hsv_max[1] - hsv_min[1]) * ratio
-		v = hsv_min[2] + (hsv_max[2] - hsv_min[2]) * ratio
+		a = col_min[0] + (col_max[0] - col_min[0]) * ratio
+		b = col_min[1] + (col_max[1] - col_min[1]) * ratio
+		c = col_min[2] + (col_max[2] - col_min[2]) * ratio
 
-		step = (int(h), int(s), int(v))
+		step = (int(a), int(b), int(c))
 		gradient.append(step)
 
 	return gradient
-	"""
-	hsv = np.full((300, 300, 3), hsv_min, dtype=np.uint8)
-	hsv_image = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
-	cv2.imshow('HSV Color', hsv_image)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
-	"""
 
-def gradient_image(g):
-	return
+def draw_gradient(gradient, hsv, width=512, height=100):
+	steps = len(gradient)
+	image = np.zeros((height, width, 3), dtype=np.uint8)
+
+	for i, (a, b, c) in enumerate(gradient):
+		x_start = int(i * width / steps)
+		x_end = int((i + 1) * width / steps)
+
+		if hsv == 1:
+			image[:, x_start:x_end] = [a, b, c]
+		else:
+			image[:, x_start:x_end] = [c, b, a]
+
+	if hsv == 1:
+		image_bgr = cv2.cvtColor(image, cv2.COLOR_HSV2BGR)
+		return image_bgr
+	else:
+		return image
 
 if format == 'HSV':
-	g = hsv_gradient(args.min, args.max, 10)
-	print(f'\
-Gradient vector: \n\
-{g}\
-	'
-	)
-	gradient_image(g)
+	gradient = calc_gradient(args.min, args.max, 10)
+	image_gradient = draw_gradient(gradient, hsv=1)
 
 if format == 'RGB':
-	print(f'Format is {args.format}')
+	gradient = calc_gradient(args.min, args.max, 10)
+	image_gradient = draw_gradient(gradient, hsv=0)
 
 if args.image is not None:
 	img = mpimg.imread(args.image)
 	plt.imshow(img)
 	plt.show()
 
+if args.out is not None:
+	file = args.out
+	cv2.imwrite(file, image_gradient)
+
+print(f'\
+Gradient vector: \n\
+{gradient}\
+'
+)
+
+cv2.imshow("Gradient", image_gradient)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
