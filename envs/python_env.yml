@@ -5,6 +5,7 @@ channels:
   - defaults
 dependencies:
   - python=3.10.12
+  - pip=26.1.1
   - pip:
     - numpy
     - opencv-python
