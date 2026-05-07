@@ -19,4 +19,4 @@ In the future, the organization may be changed to reflect different use cases.
 |Name             |Description        |
 |---              |---                |
 |`loc_to_names.sh`|Specific use case. Update gene names in a counts file (such as that produced by HTSeq) based on the old and new genome annotation file|
-|`rename.sh`       |Simple script to run `rename.py` on multiple files|
+|`rename.sh`      |Simple script to run `rename.py` on multiple files|
