@@ -22,6 +22,8 @@ Image:  {args.image}\n\
 Min:  {args.min}\n\
 Max:  {args.max}\n\
 Format:  {args.format}\n\
+Steps: {args.steps}\n\
+Output: {args.out}\n\
 '
 )
 
@@ -53,7 +55,6 @@ def calc_gradient(min, max, steps):
 
 	return gradient
 
-
 def draw_gradient(gradient, hsv, width=512, height=100):
 	steps = len(gradient)
 	image = np.zeros((height, width, 3), dtype=np.uint8)
@@ -73,29 +74,30 @@ def draw_gradient(gradient, hsv, width=512, height=100):
 	else:
 		return image
 
-if format == 'HSV':
-	gradient = calc_gradient(args.min, args.max, steps)
-	image_gradient = draw_gradient(gradient, hsv=1)
+if args.min and args.max is not None:
+	if format == 'HSV':
+		gradient = calc_gradient(args.min, args.max, steps)
+		image_gradient = draw_gradient(gradient, hsv=1)
 
-if format == 'RGB':
-	gradient = calc_gradient(args.min, args.max, steps)
-	image_gradient = draw_gradient(gradient, hsv=0)
+	if format == 'RGB':
+		gradient = calc_gradient(args.min, args.max, steps)
+		image_gradient = draw_gradient(gradient, hsv=0)
+
+	if args.out is not None:
+		file = args.out
+		cv2.imwrite(file, image_gradient)
+
+	print(f'\
+Gradient vector: \n\
+{gradient}\
+'
+	)
+
+	cv2.imshow("Gradient", image_gradient)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
 
 if args.image is not None:
 	img = mpimg.imread(args.image)
 	plt.imshow(img)
 	plt.show()
-
-if args.out is not None:
-	file = args.out
-	cv2.imwrite(file, image_gradient)
-
-print(f'\
-Gradient vector: \n\
-{gradient}\
-'
-)
-
-cv2.imshow("Gradient", image_gradient)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
