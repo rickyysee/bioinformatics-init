@@ -1,0 +1,11 @@
+name: python_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10.12
+  - pip:
+    - numpy
+    - opencv-python
+    - matplotlib
