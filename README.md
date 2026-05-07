@@ -10,13 +10,14 @@ In the future, the organization may be changed to reflect different use cases.
 
 |Name             |Description        |
 |---              |---                |
-|`genome.py`      |Gather simple statistics on a genome file. Expects a `.gz` fasta file and produces GC%|
-|`ls.py`          |Mimics the function of Bash's `ls` command|
-|`rename.py`      |Rename the first column of a file based on a name map file|
+|`cvcolor.py`     |Generate a gradient between two specified HSV or RGB colors. Uses linear interpolation for each value separately.|
+|`genome.py`      |Gather simple statistics on a genome file. Expects a `.gz` fasta file and produces GC%.|
+|`ls.py`          |Mimics the function of Bash's `ls` command.|
+|`rename.py`      |Rename the first column of a file based on a name map file.|
 
 ### Bash Scripts
 
 |Name             |Description        |
 |---              |---                |
-|`loc_to_names.sh`|Specific use case. Update gene names in a counts file (such as that produced by HTSeq) based on the old and new genome annotation file|
-|`rename.sh`      |Simple script to run `rename.py` on multiple files|
+|`loc_to_names.sh`|Specific use case. Update gene names in a counts file (such as that produced by HTSeq) based on the old and new genome annotation file.|
+|`rename.sh`      |Simple script to run `rename.py` on multiple files.|
