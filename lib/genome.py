@@ -20,18 +20,19 @@ with gzip.open(args.input, 'rt') as f:
 	# iterate over each line
 	for line in f:
 		# check lines only if they are not header lines
-		if not line.startswith('>'):
-			G += line.count("G")
-			C += line.count("C")
-			T += line.count("T")
-			A += line.count("A")
-			g += line.count("g")
-			c += line.count("c")
-			t += line.count("t")
-			a += line.count("a")
-			N += line.count("N")
-			n += line.count("n")
-			total += len(line) - 1
+		if line.startswith('>'):
+			continue
+		G += line.count("G")
+		C += line.count("C")
+		T += line.count("T")
+		A += line.count("A")
+		g += line.count("g")
+		c += line.count("c")
+		t += line.count("t")
+		a += line.count("a")
+		N += line.count("N")
+		n += line.count("n")
+		total += len(line) - 1
 
 # print total counts per base
 print("G: ", G+g)
