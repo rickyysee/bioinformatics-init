@@ -4,7 +4,7 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - python=3.10.12
+  - python=3.13.5
   - pip=26.1.1
   - pip:
     - numpy
