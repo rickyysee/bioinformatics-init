@@ -58,7 +58,6 @@ elif args.chr == True:
 	current_header = None
 	with gzip.open(args.input, 'rt') as f:
 		for line in f:
-			line = line.rstrip('\n')
 			if line.startswith('>'):
 				current_header = line
 				results[current_header] = defaultdict(int)
@@ -74,7 +73,7 @@ elif args.chr == True:
 				counts['a'] += line.count('a')
 				counts['N'] += line.count('N')
 				counts['n'] += line.count('n')
-				counts['total'] += len(line)
+				counts['total'] += len(line) - 1
 	for header, counts in results.items():
 		total = counts['total']
 		if total > 0:
