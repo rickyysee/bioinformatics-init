@@ -1,0 +1,10 @@
+name: genomics
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - samtools
+  - htslib
+  - tabix
+  - bcftools
