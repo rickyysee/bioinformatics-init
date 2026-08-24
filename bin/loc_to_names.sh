@@ -36,50 +36,34 @@ help()
 
 match()
 {
-  ### Extract NCBI gene id and store in temporary file
   echo "Extracting genomic location and locus tags from annotation..."
-  awk -F '\t' -v OFS='\t' '/^[^#]/{print $4, $5, $9}' $ncbi | # print the genomic location (fields 4 and 5) and gene info (field 9)
-  sed -E 's/^([^[:space:]]*)\t([^[:space:]]*)\tgene_id "([^"]*)".*$/\1\t\2\t\3/p' | # extract the gene id and return genomic location and gene id
-  awk -F '\t' '!first[$3]++' > $output # return entire line of first occurrence of third field (gene id) to avoid duplicates
+  awk -F '\t' -v OFS='\t' '/^[^#]/{print $4, $5, $9}' $ncbi |
+  sed -nE 's/^([^[:space:]]*)\t([^[:space:]]*)\tgene_id "([^"]*)".*$/\1\t\2\t\3/p' |
+  awk -F '\t' '!first[$3]++' > $output
 
-  ### Filter genomic location of locus tags by those found in counts
   echo "Filtering by counted genes..."
-  awk -F '\t' '/^[^_]/{print $1}' $counts | # get the locus tags from counts file
-  awk -F '\t' 'NR==FNR{seen[$1]; next} $3 in seen{print $0 > "temp"}' - $output # make an array of lines from stdout, then print entire line from temp when field 3 matches array
-  mv temp $output
+  awk -F '\t' '/^[^_]/{print $1}' $counts |
+  awk -F '\t' 'NR==FNR{seen[$1]; next} $3 in seen{print $0 > "temp"}' - $output
 
-  ### Get curated transcript id from genomic location
+
   echo "Obtaining transcript IDs..."
-  # This next command lines up the temp and annotated files by start and end of genome location
   awk -F '\t' -v OFS='\t' '
-  # =====
-  # first pass is on the curated.tsv file
-  # key = start and end
-  # value = locus tag
-  # =====
   NR==FNR{
-    key = $1 FS $2
-    seen[key] = $3;
-    next
+  key = $1 FS $2
+  seen[key] = $3;
+  next
   }
-  # =====
-  # create same key for annotated file
-  # =====
   {
   key = $4 FS $5
   }
-  # =====
-  # when both keys match, print the value (locus tag), genome location and gene info
-  # =====
   key in seen{
-    print seen[key], $4, $5, $9
-    }
+  print seen[key], $4, $5, $9
+  }
   ' $output $annotated |
-  sed -E 's/^([^[:space:]]*)\t([^[:space:]]*)\t([^[:space:]]*)\tgene_id "([^"]*)".*transcript_id "([^"]*)".*$/\1\t\2\t\3\t\5/p' | # extract the transcript id and return locus tag, genomic location, and transcript id
+  sed -nE 's/^([^[:space:]]*)\t([^[:space:]]*)\t([^[:space:]]*)\tgene_id "([^"]*)".*$/\1\t\2\t\3\t\4/p' |
   awk -F '\t' '!first[$1]++ {print $0 > "temp"}'
   mv temp $output
 
-  ### Remove lines where locus tag and transcript id are the same or transcript id is empty
   echo "Cleaning up..."
   awk -F '\t' '$1 != $4 {print $0}' $output |
   awk -F '\t' '$4 != "" {print $0 > "temp"}'
