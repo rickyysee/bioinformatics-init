@@ -1,6 +1,6 @@
 #!/bin/bash
 
-usage="Usage: $(basename "$0") -[h|m|r] -[n|a|c|q] <inputs> -o <output>" # usage statement if help is called or args are incorrect
+usage="Usage: $(basename "$0") -[h|m|r] -[n|a|c|q] <inputs> -o <output>" # if help is called or incorrect args
 # initialize some variables to default 0 values
 match_flag=0
 rename_flag=0
@@ -36,17 +36,19 @@ help()
 
 match()
 {
+  # extract locus tags, coordinates, and store in temp file
   echo "Extracting genomic location and locus tags from annotation..."
   awk -F '\t' -v OFS='\t' '/^[^#]/{print $4, $5, $9}' $ncbi |
   sed -nE 's/^([^[:space:]]*)\t([^[:space:]]*)\tgene_id "([^"]*)".*$/\1\t\2\t\3/p' |
   awk -F '\t' '!first[$3]++' > $output
 
+  # filter genomic location of locus tags by counts file
   echo "Filtering by counted genes..."
   awk -F '\t' '/^[^_]/{print $1}' $counts |
   awk -F '\t' 'NR==FNR{seen[$1]; next} $3 in seen{print $0 > "temp"}' - $output
 
-
-  echo "Obtaining transcript IDs..."
+  # gather gene IDs in curated file by genomic location
+  echo "Obtaining gene IDs..."
   awk -F '\t' -v OFS='\t' '
   NR==FNR{
   key = $1 FS $2
@@ -64,6 +66,7 @@ match()
   awk -F '\t' '!first[$1]++ {print $0 > "temp"}'
   mv temp $output
 
+  # only keep lines where old and new names are different and new name is not empty
   echo "Cleaning up..."
   awk -F '\t' '$1 != $4 {print $0}' $output |
   awk -F '\t' '$4 != "" {print $0 > "temp"}'
