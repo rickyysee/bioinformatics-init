@@ -3,20 +3,17 @@
 import argparse
 import sys
 import gzip
-from collections import defaultdict
 
 parser = argparse.ArgumentParser()
 
-# Add arguments that user can
+# add arguments that user can change
 parser.add_argument('input', help='Input file to work with.')
-parser.add_argument('-c', '--chr', action='store_true', help='Gather statistics by chromosomes.')
+parser.add_argument('-d', '--def', action='store_true', help='Gather statistics by defline.')
 args = parser.parse_args()
 
-# Initialize all variables as zero
-G = C = T = A = g = c = t = a = N = n = total = 0
-
+# initialize dict for counts
+counts = {}
 if args.chr == False:
-# Open the gz file
 	with gzip.open(args.input, 'rt') as f:
 		# Iterate over each line
 		for line in f:
