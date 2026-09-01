@@ -73,7 +73,7 @@ def kyte_doolittle(seq):
 
 # translate a dna sequence to amino acid sequence
 
-CODONS = {
+AMINOS = {
 	'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S',
 	'TTC': 'F', 'TTT': 'F', 'TTA': 'L', 'TTG': 'L',
 	'TAC': 'Y', 'TAT': 'Y', 'TAA': '*', 'TAG': '*',
@@ -92,17 +92,13 @@ CODONS = {
 	'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G'
 }
 
-# convert dna sequence to protein sequence using codon dict
-def translate(dna):
-	codons = ('ATG', 'TAA', 'TAG', 'TGA')
-	aminos = 'M***'
+# convert dna sequence to protein sequence using amino acid chart
+def translate(dna, frame=0):
 	aas = []
-	for i in range(0, len(dna), 3):
+	dna = dna.upper()
+	if 'U' in dna: dna = dna.replace('U', 'T')
+	for i in range(frame, len(dna), 3):
 		codon = dna[i:i+3]
-		if codon in codons:
-			idx = codons.index(codon)
-			aa = aminos[idx]
-			aas.append(aa)
-		else:
-			aas.append('X')
+		if codon in AMINOS: aas.append(AMINOS[codon])
+		else:               aas.append('X')
 	return ''.join(aas)
