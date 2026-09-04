@@ -2,7 +2,6 @@
 
 import sequence
 import argparse
-import sys
 import gzip
 
 parser = argparse.ArgumentParser(description='gather counts of a fasta file')
@@ -15,25 +14,20 @@ args = parser.parse_args()
 file = args.input
 byDef = args.defline
 
-# initialize dict for counts
-counts = {}
 if byDef == False:
-	with gzip.open(args.input, 'rt') as f:
-		# iterate over each line
-		for line in f:
-			# check lines only if they are not header lines
-			if line.startswith('>'): continue
-			G += line.count("G")
-			C += line.count("C")
-			T += line.count("T")
-			A += line.count("A")
-			g += line.count("g")
-			c += line.count("c")
-			t += line.count("t")
-			a += line.count("a")
-			N += line.count("N")
-			n += line.count("n")
-			total += len(line) - 1
+	# count bases with dict
+	counts = {}
+	for defline, seq in sequence.read_fasta(file):
+		for nt in seq:
+			if nt not in counts: counts[nt] = 0
+			counts[nt] += 1
+
+	# create an ordered dictionary with default 0 values to initialize variables
+	bases = ['G', 'g', 'C', 'c', 'T', 't', 'A', 'a', 'N', 'n']
+	bases_counts = {b: counts.get(b, 0) for b in bases}
+	G, g, C, c, T, t, A, a, N, n = (counts.get(b, 0) for b in bases)
+	total = G+g+C+c+T+t+A+a+N+n
+
 	# print total counts per base
 	print("G: ", G+g)
 	print("C: ", C+c)
@@ -52,7 +46,26 @@ if byDef == False:
 	print("Unmasked GC content: ", f"{(G+C)/(G+C+T+A)*100:.5}%")
 	print()
 
+
+
 elif byDef == True:
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	"""
 	# start a dictionary to store results
 	results = {} # { header: {G, C, A, T, N, total}}
 	current_header = None
@@ -79,3 +92,4 @@ elif byDef == True:
 		if total > 0:
 			gc = (counts['G'] + counts['g'] + counts['C'] + counts['c']) / total * 100
 			print(f"{header}  GC%: {gc:.2f}%  total_bases: {total}")
+	"""
