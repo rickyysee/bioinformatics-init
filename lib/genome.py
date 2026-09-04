@@ -29,21 +29,21 @@ if byDef == False:
 	total = G+g+C+c+T+t+A+a+N+n
 
 	# print total counts per base
-	print('G: ', G+g)
-	print('C: ', C+c)
-	print('T: ', T+t)
-	print('A: ', A+a)
-	print('N: ', N+n)
+	print(f'G: {G+g}')
+	print(f'C: {C+c}')
+	print(f'T: {T+t}')
+	print(f'A: {A+a}')
+	print(f'N: {N+n}')
 	print()
 	# print various totals
-	print('Total bases: ', total)
-	print('Total unambiguous bases: ', total-N-n)
-	print('Total unmasked bases: ', G+C+T+A)
-	print('Total masked bases: ', g+c+t+a)
+	print(f'Total bases: {total}')
+	print(f'Total unambiguous bases: {total-N-n}')
+	print(f'Total unmasked bases: {G+C+T+A}')
+	print(f'Total masked bases: {g+c+t+a}')
 	print()
 	# print GC content
-	print('Total GC content: ', f'{(G+g+C+c)/(total-N-n)*100:.5}%')
-	print('Unmasked GC content: ', f'{(G+C)/(G+C+T+A)*100:.5}%')
+	print(f'Total GC content: {(G+g+C+c)/(total-N-n)*100:.5}%')
+	print(f'Unmasked GC content: {(G+C)/(G+C+T+A)*100:.5}%')
 
 
 elif byDef == True:
