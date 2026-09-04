@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
 
+import sequence
 import argparse
 import sys
 import gzip
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description='gather counts of a fasta file')
 
 # add arguments that user can change
-parser.add_argument('input', help='Input file to work with.')
-parser.add_argument('-d', '--def', action='store_true', help='Gather statistics by defline.')
+parser.add_argument('input', help='input file to work with')
+parser.add_argument('-d', '--defline', action='store_true', help='gather statistics by defline')
 args = parser.parse_args()
+
+file = args.input
+byDef = args.defline
 
 # initialize dict for counts
 counts = {}
-if args.chr == False:
+if byDef == False:
 	with gzip.open(args.input, 'rt') as f:
-		# Iterate over each line
+		# iterate over each line
 		for line in f:
-			# Check lines only if they are not header lines
-			if line.startswith('>'):
-				continue
+			# check lines only if they are not header lines
+			if line.startswith('>'): continue
 			G += line.count("G")
 			C += line.count("C")
 			T += line.count("T")
@@ -31,26 +34,26 @@ if args.chr == False:
 			N += line.count("N")
 			n += line.count("n")
 			total += len(line) - 1
-	# Print total counts per base
+	# print total counts per base
 	print("G: ", G+g)
 	print("C: ", C+c)
 	print("T: ", T+t)
 	print("A: ", A+a)
 	print("N: ", N+n)
 	print()
-	# Print various totals
+	# print various totals
 	print("Total bases: ", total)
 	print("Total unambiguous bases: ", total-N-n)
 	print("Total unmasked bases: ", G+C+T+A)
 	print("Total masked bases: ", g+c+t+a)
 	print()
-	# Print GC content
+	# print GC content
 	print("Total GC content: ", f"{(G+g+C+c)/(total-N-n)*100:.5}%")
 	print("Unmasked GC content: ", f"{(G+C)/(G+C+T+A)*100:.5}%")
 	print()
 
-elif args.chr == True:
-	# Start a dictionary to store results
+elif byDef == True:
+	# start a dictionary to store results
 	results = {} # { header: {G, C, A, T, N, total}}
 	current_header = None
 	with gzip.open(args.input, 'rt') as f:
