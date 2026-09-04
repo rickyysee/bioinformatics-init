@@ -2,7 +2,6 @@
 
 import sequence
 import argparse
-import gzip
 
 parser = argparse.ArgumentParser(description='gather counts of a fasta file')
 
@@ -76,4 +75,3 @@ elif byDef == True:
 		print(f'>{defline}')
 		print(f'G:{G+g}\tC:{C+c}\tT:{T+t}\tA:{A+a}\tN:{N+n}')
 		print(f'GC:{gc*100:.2f}%\ttotal:{total}')
-		
