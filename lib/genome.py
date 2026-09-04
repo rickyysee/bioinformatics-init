@@ -6,7 +6,7 @@ import gzip
 
 parser = argparse.ArgumentParser(description='gather counts of a fasta file')
 
-# add arguments that user can change
+# handle arguments and assign to variables
 parser.add_argument('input', help='input file to work with')
 parser.add_argument('-d', '--defline', action='store_true', help='gather statistics by defline')
 args = parser.parse_args()
@@ -46,47 +46,34 @@ if byDef == False:
 
 
 elif byDef == True:
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	"""
-	# start a dictionary to store results
-	results = {} # { header: {G, C, A, T, N, total}}
-	current_header = None
-	with gzip.open(args.input, 'rt') as f:
-		for line in f:
-			if line.startswith('>'):
-				current_header = line
-				results[current_header] = defaultdict(int)
-			elif current_header is not None:
-				counts = results[current_header]
-				counts['G'] += line.count('G')
-				counts['C'] += line.count('C')
-				counts['T'] += line.count('T')
-				counts['A'] += line.count('A')
-				counts['g'] += line.count('g')
-				counts['c'] += line.count('c')
-				counts['t'] += line.count('t')
-				counts['a'] += line.count('a')
-				counts['N'] += line.count('N')
-				counts['n'] += line.count('n')
-				counts['total'] += len(line) - 1
-	for header, counts in results.items():
-		total = counts['total']
-		if total > 0:
-			gc = (counts['G'] + counts['g'] + counts['C'] + counts['c']) / total * 100
-			print(f'{header}  GC%: {gc:.2f}%  total_bases: {total}')
-	"""
+	# create a dictionary to store all results
+	results = {} # {defline: {G, g, ... N, n, total}}
+	this_defline = None
+
+	# read in the fasta
+	for defline, seq in sequence.read_fasta(file):
+
+		# create a dictionary for the current defline
+		this_defline = defline
+		if this_defline not in results: results[this_defline] = {}
+		counts = results[this_defline]
+
+		# count the bases in this defline's sequence
+		for nt in seq:
+			if nt not in counts: counts[nt] = 0
+			counts[nt] += 1
+
+		# store dictionary counts in variables for easier calling
+		bases = ['G', 'g', 'C', 'c', 'T', 't', 'A', 'a', 'N', 'n']
+		G, g, C, c, T, t, A, a, N, n = (counts.get(b, 0) for b in bases)
+		total = G + g + C + c + T + t + A + a + N + n
+
+		# do not print deflines with no sequence
+		if total == 0: continue
+
+		gc = (G + C + g + c) / total
+
+		print(f'>{defline}')
+		print(f'G:{G+g}\tC:{C+c}\tT:{T+t}\tA:{A+a}\tN:{N+n}')
+		print(f'GC:{gc*100:.2f}%\ttotal:{total}')
+		print()
