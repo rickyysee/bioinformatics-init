@@ -44,8 +44,6 @@ if byDef == False:
 	# print GC content
 	print('Total GC content: ', f'{(G+g+C+c)/(total-N-n)*100:.5}%')
 	print('Unmasked GC content: ', f'{(G+C)/(G+C+T+A)*100:.5}%')
-	print()
-
 
 
 elif byDef == True:
@@ -65,7 +63,7 @@ elif byDef == True:
 	
 	
 	
-	'''
+	"""
 	# start a dictionary to store results
 	results = {} # { header: {G, C, A, T, N, total}}
 	current_header = None
@@ -92,4 +90,4 @@ elif byDef == True:
 		if total > 0:
 			gc = (counts['G'] + counts['g'] + counts['C'] + counts['c']) / total * 100
 			print(f'{header}  GC%: {gc:.2f}%  total_bases: {total}')
-	'''
+	"""
