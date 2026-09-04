@@ -22,11 +22,10 @@ if byDef == False:
 			if nt not in counts: counts[nt] = 0
 			counts[nt] += 1
 
-	# create an ordered dictionary with default 0 values to initialize variables
+	# initialize variables based on a set alphabet
 	bases = ['G', 'g', 'C', 'c', 'T', 't', 'A', 'a', 'N', 'n']
-	bases_counts = {b: counts.get(b, 0) for b in bases}
 	G, g, C, c, T, t, A, a, N, n = (counts.get(b, 0) for b in bases)
-	total = G+g+C+c+T+t+A+a+N+n
+	total = G + g + C + c + T + t + A + a + N + n
 
 	# print total counts per base
 	print(f'G: {G+g}')
