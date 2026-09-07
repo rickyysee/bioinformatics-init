@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# gather general statistics of a FASTA file
+
 import sequence
 import argparse
 

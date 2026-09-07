@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# minimize a FASTA (depending on percent) or GTF (depending on FASTA)
+
 import sequence
 import argparse
 import sys
