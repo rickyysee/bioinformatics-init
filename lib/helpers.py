@@ -4,6 +4,7 @@
 
 import os
 import argparse
+from pathlib import Path
 
 # handle arguments and assign variables for CLI usage
 parser = argparse.ArgumentParser(description='non-bioinformatic helper functions')
@@ -26,20 +27,22 @@ def find_files(directory, search, exclude):
 	# recursively walk through each subdirectory
 	for current, dirs, files in os.walk(directory):
 		exclusion_flag = False
+		
 		# if the current directory has an excluded directory, mark it for exclusion
 		if exclude:
 			for path in exclude:
-				# if path not in current: print(current, dirs, files)
 				if path in current: exclusion_flag = True
-		# else: print(current, dirs, files)
 
 		# if current directory is marked for exclusion, go to next cycle
 		if exclusion_flag == True: continue
 		
-		# add any found files to the overall list
 		for file in files:
+			# if search is specified and the string is not in the filename, go to next cycle
 			if search and search not in file: continue
 			found_file = os.path.join(current, file)
+
+			# convert file to a path object and append it to overall list
+			found_file = Path(found_file)
 			found_files.append(found_file)
 
 	return found_files
